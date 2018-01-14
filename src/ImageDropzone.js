@@ -11,25 +11,25 @@ class ImageDropzone extends React.Component {
     this.setState({
       files
     });
+
+    console.log(files)
   }
 
   render() {
     return (
-      <section>
+      <div>
         <div className="dropzone">
           <Dropzone onDrop={this.onDrop.bind(this)}>
             <p>Try dropping some files here, or click to select files to upload.</p>
           </Dropzone>
         </div>
-        <aside>
-          <h2>Dropped files</h2>
-          <div>
-            {
-              this.state.files.map(f => <div key={f.name}>{f.name} - {f.size} bytes</div>)
-            }
-          </div>
-        </aside>
-      </section>
+        <h2>Dropped files</h2>
+
+          {
+            this.state.files.map(f => <p key={f.name}>{f.name} - {f.size} bytes</p>)
+          }
+
+      </div>
     );
   }
 }
