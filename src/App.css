@@ -11,3 +11,9 @@
   display: flex;
   justify-content: center;
 }
+
+.subtle-gray-gradient {
+  background: -webkit-linear-gradient(to top, #d9a7c7, #fffcdc);
+  background: -moz-linear-gradient(to top, #d9a7c7, #fffcdc);
+  background: linear-gradient(to top, #d9a7c7, #fffcdc);
+}
