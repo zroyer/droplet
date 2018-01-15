@@ -70,7 +70,7 @@ class ImageDropzone extends React.Component {
 
     if(this.state.isUploading) {
       message = (
-        <Spinner name='pulse' fadeIn='none' color='#ffffff'/>
+        <Spinner name='ball-scale-ripple' fadeIn='none' color='#ffffff'/>
       )
     } else if (!this.state.isUploading && this.state.imgurUrl) {
       message = (
