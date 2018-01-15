@@ -1,6 +1,7 @@
 import React from 'react';
 import Dropzone from 'react-dropzone'
 import axios from 'axios'
+import Spinner from 'react-spinkit'
 
 class ImageDropzone extends React.Component {
   constructor() {
@@ -53,7 +54,8 @@ class ImageDropzone extends React.Component {
 
     if(this.state.isUploading) {
       message = (
-        <p>Loading...</p>
+        <p><Spinner name='wave' fadeIn='none'/></p>
+
       )
     } else if (!this.state.isUploading && this.state.imgurUrl) {
       message = (
