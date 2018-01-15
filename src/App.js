@@ -5,8 +5,7 @@ import './App.css';
 class App extends Component {
   render() {
     return (
-      <div className="App subtle-gray-gradient">
-        <h1 className="App-title"><span role="img">☕️</span></h1>
+      <div className="App">
         <ImageDropzone />
       </div>
     );
