@@ -8,7 +8,8 @@ const initialState = {
   imgurUrl: '',
   isUploading: false,
   hasErrored: false,
-  hasUploaded: false
+  hasUploaded: false,
+  copied: false
 };
 
 class ImageDropzone extends React.Component {
@@ -55,7 +56,13 @@ class ImageDropzone extends React.Component {
   }
 
   refresh() {
-    this.setState(initialState);
+    this.setState({
+      copied: true
+    });
+
+    setTimeout(() => {
+      this.setState(initialState);
+    }, 2500)
   }
 
   render() {
@@ -69,7 +76,11 @@ class ImageDropzone extends React.Component {
       message = (
         <Clipboard data-clipboard-text={this.state.imgurUrl} onClick={this.refresh} className='bg-button'>
           <p>{this.state.imgurUrl}</p>
-          <p className="copy-notice">Click anywhere to copy your URL and start over</p>
+          {this.state.copied ?
+            <p className="copy-notice">Copied!</p>
+            :
+            <p className="copy-notice">Click anywhere to copy your URL and start over</p>
+          }
         </Clipboard>
       )
     } else if (this.state.hasErrored) {
