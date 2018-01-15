@@ -36,8 +36,14 @@
   color: #ffffff;
 }
 
-.copy-notice {
+.message {
   font-size: 24px;
+  color: #ffffff;
+}
+
+.error {
+  font-size: 36px;
+  color: #ffffff;
 }
 
 button {

@@ -8,6 +8,7 @@ const initialState = {
   imgurUrl: '',
   isUploading: false,
   hasErrored: false,
+  errorMessage: '',
   hasUploaded: false,
   copied: false
 };
@@ -18,50 +19,77 @@ class ImageDropzone extends React.Component {
     this.state = initialState;
 
     this.refresh = this.refresh.bind(this);
+    this.handleCopy = this.handleCopy.bind(this);
   }
 
   onDrop(files) {
-    this.setState({
-      isUploading: true
-    });
+    if (this.validateFiles(files)) {
+      this.setState({
+        isUploading: true
+      });
 
-    var form = new FormData()
-    form.append('image', files[0])
-    form.append('name', files[0].name)
+      var form = new FormData()
+      form.append('image', files[0])
+      form.append('name', files[0].name)
 
-    const config = {
-      baseURL: 'https://api.imgur.com',
-      headers: {
-        'Authorization': 'Client-ID 37266d00d3ab6ea'
+      const config = {
+        baseURL: 'https://api.imgur.com',
+        headers: {
+          'Authorization': 'Client-ID 37266d00d3ab6ea'
+        }
       }
-    }
 
-    axios.post('/3/image', form, config)
-    .then((result) => {
-      this.setState({
-        isUploading: false,
-        hasUploaded: true,
-        imgurUrl: result.data.data.link.replace('https://', ''),
-      });
-      console.log(result)
-    })
-    .catch((error) => {
-      this.setState({
-        isUploading: false,
-        hasErrored: true,
-      });
-      console.log(error)
-    })
+      axios.post('/3/image', form, config)
+      .then((result) => {
+        this.setState({
+          isUploading: false,
+          hasUploaded: true,
+          imgurUrl: result.data.data.link.replace('https://', ''),
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          isUploading: false,
+          hasErrored: true,
+        });
+        console.log(error)
+      })
+    } else {
+      this.refresh();
+    }
   }
 
-  refresh() {
+  validateFiles(files) {
+    const supported = ['image/jpeg', 'image/png', 'image/gif']
+
+    if (files.length > 1) {
+      this.setState({
+        hasErrored: true,
+        errorMessage: 'one at a time, please'
+      })
+      return false;
+    } else if (supported.indexOf(files[0].type ) === -1) {
+      this.setState({
+        hasErrored: true,
+        errorMessage: 'sorry, we only support images at this time'
+      })
+      return false;
+    }
+    return true;
+  }
+
+  handleCopy() {
     this.setState({
       copied: true
     });
 
+    this.refresh();
+  }
+
+  refresh() {
     setTimeout(() => {
       this.setState(initialState);
-    }, 2500)
+    }, 2000)
   }
 
   render() {
@@ -75,19 +103,23 @@ class ImageDropzone extends React.Component {
       message = (
         <Clipboard
           data-clipboard-text={this.state.imgurUrl}
-          onClick={this.refresh}
+          onClick={this.handleCopy}
           className='bg-button'>
-          <p>{this.state.imgurUrl}</p>
-          {this.state.copied ?
-            <p className="copy-notice">copied!</p>
-            :
-            <p className="copy-notice">click anywhere to copy this link to your clipboard</p>
-          }
+          <span>
+            <p>{this.state.imgurUrl}</p>
+            {this.state.copied ?
+              <p className="message">copied!</p>
+              :
+              <p className="message">click anywhere to copy this link to your clipboard</p>
+            }
+          </span>
         </Clipboard>
       )
     } else if (this.state.hasErrored) {
       message = (
-        <p>woops...</p>
+        <p className="error">
+          {this.state.errorMessage}
+        </p>
       )
     } else {
       message = (
@@ -101,7 +133,7 @@ class ImageDropzone extends React.Component {
 
     return (
       <div className="dropzone">
-        { message }
+        {message}
       </div>
     );
   }
