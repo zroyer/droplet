@@ -70,7 +70,7 @@ class ImageDropzone extends React.Component {
 
     if(this.state.isUploading) {
       message = (
-        <Spinner name='wave' fadeIn='none'/>
+        <Spinner name='wave' fadeIn='none' color='#ffffff'/>
       )
     } else if (!this.state.isUploading && this.state.imgurUrl) {
       message = (
@@ -102,7 +102,5 @@ class ImageDropzone extends React.Component {
     );
   }
 }
-
-<ImageDropzone />
 
 export default ImageDropzone
