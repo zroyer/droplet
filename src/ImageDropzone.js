@@ -2,16 +2,21 @@ import React from 'react';
 import Dropzone from 'react-dropzone'
 import axios from 'axios'
 import Spinner from 'react-spinkit'
+import Clipboard from 'react-clipboard.js';
+
+const initialState = {
+  imgurUrl: '',
+  isUploading: false,
+  hasErrored: false,
+  hasUploaded: false
+};
 
 class ImageDropzone extends React.Component {
   constructor() {
     super()
-    this.state = {
-      imgurUrl: '',
-      isUploading: false,
-      hasErrored: false,
-      hasUploaded: false
-    }
+    this.state = initialState;
+
+    this.refresh = this.refresh.bind(this);
   }
 
   onDrop(files) {
@@ -49,17 +54,23 @@ class ImageDropzone extends React.Component {
     })
   }
 
+  refresh() {
+    this.setState(initialState);
+  }
+
   render() {
     let message;
 
     if(this.state.isUploading) {
       message = (
-        <p><Spinner name='wave' fadeIn='none'/></p>
-
+        <Spinner name='wave' fadeIn='none'/>
       )
     } else if (!this.state.isUploading && this.state.imgurUrl) {
       message = (
-        <p id='shortUrl'>{this.state.imgurUrl}</p>
+        <Clipboard data-clipboard-text={this.state.imgurUrl} onClick={this.refresh} className='bg-button'>
+          <p>{this.state.imgurUrl}</p>
+          <p className="copy-notice">Click anywhere to copy your URL and start over</p>
+        </Clipboard>
       )
     } else if (this.state.hasErrored) {
       message = (
@@ -67,15 +78,15 @@ class ImageDropzone extends React.Component {
       )
     } else {
       message = (
-        <p>Drop to upload</p>
+        <Dropzone onDrop={this.onDrop.bind(this)} className="dropzone-target">
+          <p>Drop to upload</p>
+        </Dropzone>
       )
     }
 
     return (
       <div className="dropzone">
-        <Dropzone onDrop={this.onDrop.bind(this)} className="dropzone-target">
-          { message }
-        </Dropzone>
+        { message }
       </div>
     );
   }
