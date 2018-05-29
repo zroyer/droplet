@@ -3,6 +3,7 @@ import Dropzone from 'react-dropzone'
 import axios from 'axios'
 import Spinner from 'react-spinkit'
 import Clipboard from 'react-clipboard.js';
+import FadeIn from 'react-fade-in';
 
 const initialState = {
   imgurUrl: '',
@@ -17,7 +18,6 @@ class ImageDropzone extends React.Component {
   constructor() {
     super()
     this.state = initialState;
-
     this.refresh = this.refresh.bind(this);
     this.handleCopy = this.handleCopy.bind(this);
   }
@@ -97,7 +97,9 @@ class ImageDropzone extends React.Component {
 
     if(this.state.isUploading) {
       message = (
-        <Spinner name='ball-scale-ripple' fadeIn='none' color='#ffffff'/>
+        <FadeIn>
+          <Spinner name='ball-scale-ripple' fadeIn='none' color='#ffffff'/>
+        </FadeIn>
       )
     } else if (!this.state.isUploading && this.state.imgurUrl) {
       message = (
@@ -108,9 +110,13 @@ class ImageDropzone extends React.Component {
           <span>
             <p>{this.state.imgurUrl}</p>
             {this.state.copied ?
-              <p className="message">copied!</p>
+              <FadeIn>
+                <p className="message">copied!</p>
+              </FadeIn>
               :
-              <p className="message">click anywhere to copy this link to your clipboard</p>
+              <FadeIn>
+                <p className="message">click anywhere to copy this link to your clipboard</p>
+              </FadeIn>
             }
           </span>
         </Clipboard>
@@ -126,7 +132,9 @@ class ImageDropzone extends React.Component {
         <Dropzone
           onDrop={this.onDrop.bind(this)}
           className="dropzone-target">
-          <p>drop to upload</p>
+          <FadeIn>
+            <p>drop to upload</p>
+          </FadeIn>
         </Dropzone>
       )
     }
