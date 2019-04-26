@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import Dropzone from 'react-dropzone'
-import axios from 'axios'
-import Spinner from 'react-spinkit'
-import Clipboard from 'react-clipboard.js';
+import Dropzone from 'react-dropzone';
+import axios from 'axios';
+import Spinner from 'react-spinkit';
 import FadeIn from 'react-fade-in';
+
+import ClickToCopy from './ClickToCopy';
 
 const initialState = {
   imgurUrl: '',
@@ -18,19 +19,17 @@ class ImageDropzone extends Component {
   constructor() {
     super();
     this.state = initialState;
-    this.refresh = this.refresh.bind(this);
-    this.handleCopy = this.handleCopy.bind(this);
   }
 
   onDrop(files) {
     if (this.validateFiles(files)) {
       this.setState({
-        isUploading: true
+        isUploading: true,
       });
 
-      var form = new FormData()
-      form.append('image', files[0])
-      form.append('name', files[0].name)
+      var form = new FormData();
+      form.append('image', files[0]);
+      form.append('name', files[0].name);
 
       const config = {
         baseURL: 'https://api.imgur.com',
@@ -40,27 +39,27 @@ class ImageDropzone extends Component {
       }
 
       axios.post('/3/image', form, config)
-      .then((result) => {
-        this.setState({
-          isUploading: false,
-          hasUploaded: true,
-          imgurUrl: result.data.data.link.replace('https://', ''),
-        });
-      })
-      .catch((error) => {
-        this.setState({
-          isUploading: false,
-          hasErrored: true,
-        });
-        console.log(error)
-      })
-    } else {
-      this.refresh();
-    }
+        .then((result) => {
+          this.setState({
+            isUploading: false,
+            hasUploaded: true,
+            imgurUrl: result.data.data.link.replace('https://', ''),
+          });
+        })
+        .catch((error) => {
+          this.setState({
+            isUploading: false,
+            hasErrored: true,
+          });
+          console.log(error);
+        })
+      } else {
+        this.resetInitialState();
+      }
   }
 
   validateFiles(files) {
-    const supported = ['image/jpeg', 'image/png', 'image/gif']
+    const supported = ['image/jpeg', 'image/png', 'image/gif'];
 
     if (files.length > 1) {
       this.setState({
@@ -83,13 +82,13 @@ class ImageDropzone extends Component {
       copied: true
     });
 
-    this.refresh();
+    this.resetInitialState();
   }
 
-  refresh = () => {
+  resetInitialState = () => {
     setTimeout(() => {
       this.setState(initialState);
-    }, 2000)
+    }, 2000);
   }
 
   render() {
@@ -106,24 +105,11 @@ class ImageDropzone extends Component {
     }
     else if (!this.state.isUploading && this.state.imgurUrl) {
       message = (
-        <Clipboard
-          data-clipboard-text={this.state.imgurUrl}
-          onClick={this.handleCopy}
-          className='bg-button'
-        >
-          <span>
-            <p>{this.state.imgurUrl}</p>
-            {this.state.copied ?
-              <FadeIn>
-                <p className="message">copied!</p>
-              </FadeIn>
-              :
-              <FadeIn>
-                <p className="message">click anywhere to copy this link to your clipboard</p>
-              </FadeIn>
-            }
-          </span>
-        </Clipboard>
+        <ClickToCopy
+          handleCopy={this.handleCopy}
+          imgurUrl={this.state.imgurUrl}
+          copied={this.state.copied}
+        />
       )
     }
     else if (this.state.hasErrored) {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import ImageDropzone from './ImageDropzone';
-import './App.css';
+import ImageDropzone from '../components/ImageDropzone';
 
 class App extends Component {
   render() {
