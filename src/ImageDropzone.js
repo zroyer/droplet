@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Dropzone from 'react-dropzone'
 import axios from 'axios'
 import Spinner from 'react-spinkit'
@@ -8,15 +8,15 @@ import FadeIn from 'react-fade-in';
 const initialState = {
   imgurUrl: '',
   isUploading: false,
+  hasUploaded: false,
   hasErrored: false,
   errorMessage: '',
-  hasUploaded: false,
-  copied: false
+  copied: false,
 };
 
-class ImageDropzone extends React.Component {
+class ImageDropzone extends Component {
   constructor() {
-    super()
+    super();
     this.state = initialState;
     this.refresh = this.refresh.bind(this);
     this.handleCopy = this.handleCopy.bind(this);
@@ -78,7 +78,7 @@ class ImageDropzone extends React.Component {
     return true;
   }
 
-  handleCopy() {
+  handleCopy = () => {
     this.setState({
       copied: true
     });
@@ -86,7 +86,7 @@ class ImageDropzone extends React.Component {
     this.refresh();
   }
 
-  refresh() {
+  refresh = () => {
     setTimeout(() => {
       this.setState(initialState);
     }, 2000)
@@ -95,18 +95,22 @@ class ImageDropzone extends React.Component {
   render() {
     let message;
 
-    if(this.state.isUploading) {
+    if (this.state.isUploading) {
       message = (
-        <FadeIn>
-          <Spinner name='ball-scale-ripple' fadeIn='none' color='#ffffff'/>
-        </FadeIn>
+        <Spinner
+          name='ball-scale-ripple'
+          fadeIn='none'
+          color='#ffffff'
+        />
       )
-    } else if (!this.state.isUploading && this.state.imgurUrl) {
+    }
+    else if (!this.state.isUploading && this.state.imgurUrl) {
       message = (
         <Clipboard
           data-clipboard-text={this.state.imgurUrl}
           onClick={this.handleCopy}
-          className='bg-button'>
+          className='bg-button'
+        >
           <span>
             <p>{this.state.imgurUrl}</p>
             {this.state.copied ?
@@ -121,13 +125,15 @@ class ImageDropzone extends React.Component {
           </span>
         </Clipboard>
       )
-    } else if (this.state.hasErrored) {
+    }
+    else if (this.state.hasErrored) {
       message = (
         <p className="error">
           {this.state.errorMessage}
         </p>
       )
-    } else {
+    }
+    else {
       message = (
         <Dropzone
           onDrop={this.onDrop.bind(this)}
@@ -147,4 +153,4 @@ class ImageDropzone extends React.Component {
   }
 }
 
-export default ImageDropzone
+export default ImageDropzone;
